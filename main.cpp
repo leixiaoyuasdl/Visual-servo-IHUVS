@@ -599,6 +599,17 @@ int main() {
 
     cout<<" H "<<endl;
     cout<<Hn<<endl;
+    double det = cv::determinant(Hn);
+
+    cout<<det<<endl;
+
+    double k=pow(det,1.0/3.0);
+
+    cout<<" H2 "<<endl;
+    cout<<Hn*(1.0/k)<<endl;
+
+    det = cv::determinant(Hn*(1.0/k));
+    cout<<det<<endl;
 
     // 去归一化，恢复原始的均值和尺度
 //    H21i = T2inv*Hn*T1;  // 原始点    p1 ---> p2 的单应
@@ -644,6 +655,7 @@ int main() {
 
 //    cout<<"Hn*HH.inv()"<<endl;
 //    cout<<Hn*HH.inv()<<endl;
+
 
 
     return 0;

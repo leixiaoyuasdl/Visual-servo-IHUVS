@@ -1,8 +1,7 @@
 //
 // Created by lxy on 2022/2/21.
 //
-#include "firstprocessor.h"
-#include "secondprocessor.h"
+#include "thirdprocessor.h"
 int readdata(data *a)
 {
     ifstream myfile("/home/lxy/experiment/data/data.txt");
@@ -59,15 +58,25 @@ int readdata(data *a)
 }
 
 
-int main()
+int main(int argc,char **argv)
 {
-    int number_picture = 0;
-    data da[10];
+    ros::init(argc, argv, "");
 
-    number_picture = readdata(da);
+    const std::string refFrame="base_link";
+    const std::string childFrame="tool0";
+
+    robot rob;
+    rob.getTransform(refFrame,childFrame);
+    rob.getFeatures();
+
+    data da[10];
+    for(int i=0;i<3;i++)
+    {
+        da[i] = rob.getData();
+    }
 
     firstprocessor fp[10];
-    for(int i=0;i<2;i++)
+    for(int i=0;i<3;i++)
     {
         fp[i].init(da[i]);
         fp[i].GetFourPoints();
@@ -77,22 +86,16 @@ int main()
     start =0;
     end =1;
 
-    secondprocessor sp;
-    sp.init(fp[start],fp[end]);
-    sp.ComputeH21();
+    thirdprocessor tp;
+    for(int i=0;i<2;i++)
+    {
+        secondprocessor sp;
+        sp.init(fp[i],fp[i+1]);
+        sp.ComputeH21();
+        tp.push_back(sp);
+    }
 
-    cout<<" H1 "<<endl;
-    cout<<sp.H<<endl;
-
-
-    double det = cv::determinant(sp.H);
-
-    cout<<det<<endl;
-
-    double k=pow(det,1.0/3.0);
-
-    cout<<" H2 "<<endl;
-    cout<<sp.H*(1.0/k)<<endl;
+    tp.getJ_rotation();
 
     return 0;
 }

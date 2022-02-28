@@ -7,7 +7,7 @@ void secondprocessor::ComputeH21()
 {
     vector<cv::Point2f> vP1,vP2;
     vP1 = fp1.mvKeys;
-    vP1 = fp2.mvKeys;
+    vP2 = fp2.mvKeys;
 
     const int N = vP1.size();
     cv::Mat A(2*N,8,CV_64F);
@@ -47,6 +47,12 @@ void secondprocessor::ComputeH21()
 
     x.at<double>(8,0) = 1;
     x.reshape(0, 3).copyTo(H);
+
+    double det = cv::determinant(H);
+
+    double k=pow(det,1.0/3.0);
+
+    H=H*(1.0/k);
 }
 
 void secondprocessor::getdr()

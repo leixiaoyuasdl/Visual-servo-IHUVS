@@ -4,28 +4,7 @@
 
 #ifndef VISUAL_SERVO_FIRSTPROCESSOR_H
 #define VISUAL_SERVO_FIRSTPROCESSOR_H
-#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <kdl/frames.hpp>
-#include <kdl/frames_io.hpp>
-#include <opencv2/opencv.hpp>
-
-using namespace std;
-using namespace KDL;
-using namespace cv;
-struct data
-{
-    vector<int> sum;
-    vector<double> x;
-    vector<double> y;
-    KDL::Vector v;
-    KDL::Rotation r;
-
-};
+#include "robot.h"
 class firstprocessor {
 public:
     vector<cv::Point2f> mvKeys;

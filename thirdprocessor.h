@@ -12,8 +12,9 @@ private:
     cv::Mat J_rotation;
 public:
     void push_back(secondprocessor a);
-    cv::Mat kronecker(cv::Mat m1,cv::Mat m2);
     void getJ_rotation();
+private:
+    cv::Mat kronecker(cv::Mat m1,cv::Mat m2);
 };
 
 #endif //VANISHINGPOINT_THIRDPROCESSOR_H
