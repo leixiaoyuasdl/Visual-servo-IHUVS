@@ -43,10 +43,14 @@ struct data
 class robot {
 private:
     data da;
+    std::string refFrame;
+    std::string childFrame;
 public:
-    bool getTransform(const std::string& refFrame,const std::string& childFrame);
+    robot(std::string reF,std::string chF);
+    bool getData(data &a);
+private:
+    bool getTransform();
     bool getFeatures();
-    data getData();
 };
 
 

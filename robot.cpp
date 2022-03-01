@@ -3,12 +3,19 @@
 //
 
 #include "robot.h"
-data robot::getData()
+robot::robot(const std::string reF, const std::string chF)
 {
-    return da;
+    refFrame=reF;
+    childFrame=chF;
+}
+bool robot::getData(data &a)
+{
+    if(getTransform()==false || getFeatures()==false) return false;
+    a=da;
+    return true;
 }
 
-bool robot::getTransform(const std::string &refFrame, const std::string &childFrame)
+bool robot::getTransform()
 {
     tf::TransformListener _tfListener;
     tf::StampedTransform transform;
@@ -67,9 +74,9 @@ bool robot::getFeatures()
     {
         cv_ptr = cv_bridge::toCvCopy(image_sub, sensor_msgs::image_encodings::BGR8);
         image = cv_ptr -> image;
-        cv::imshow("image", image);
+        //cv::imshow("image", image);
         ROS_INFO("image ok!");
-        cv::waitKey(1);
+        //cv::waitKey(0);
     }
     else
     {
@@ -102,6 +109,8 @@ bool robot::getFeatures()
 //        if (charucoIds1.size() > 0)
 //            cv::aruco::drawDetectedCornersCharuco(imageCopy, charucoCorners1, charucoIds1, cv::Scalar(255, 0, 0));
 
+        cout<<"-------------------  "<<charucoIds.size()<<endl;
+        cout<<"-------------------  "<<charucoIds1.size()<<endl;
 
         for(int i=0;i<charucoIds.size();i++)
         {

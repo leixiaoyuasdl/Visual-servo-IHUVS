@@ -38,14 +38,15 @@ void thirdprocessor::getJ_rotation()
     cv::Mat eye = Mat::eye(9,9,CV_64F);
     for(int i=0;i<sumofsps;i++)
     {
-        cv::Mat a;
-        a = x(Rect(0,i*9,9,9));
-        a=eye - kronecker(sps.at(i).dr,sps.at(i).H);
+        x(Rect(0,i*9,9,9))=eye - kronecker(sps.at(i).dr,sps.at(i).H);
     }
     cv::Mat u,w,vt;
 
-    cv::SVDecomp(x,w,u,vt,cv::SVD::MODIFY_A | cv::SVD::FULL_UV);
+    //cv::SVDecomp(x,w,u,vt,cv::SVD::MODIFY_A | cv::SVD::FULL_UV);
+    SVD::compute(x,w,u,vt);
 
+//    cout<<"-----------------"<<endl;
+//    cout<<x(Rect(0,9,9,9))*vt.row(8).reshape(0, 9)<<endl;
 
     vt.row(8).reshape(0, 3).copyTo(J_rotation);
 }

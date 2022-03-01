@@ -12,7 +12,6 @@ private:
 public:
     cv::Mat H;
     cv::Mat dr;
-    int test;
 public:
     void ComputeH21();
     void getdr();

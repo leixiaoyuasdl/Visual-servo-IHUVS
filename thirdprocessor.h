@@ -7,13 +7,13 @@
 
 #include "secondprocessor.h"
 class thirdprocessor {
-private:
+public:
     vector<secondprocessor> sps;
     cv::Mat J_rotation;
 public:
     void push_back(secondprocessor a);
     void getJ_rotation();
-private:
+public:
     cv::Mat kronecker(cv::Mat m1,cv::Mat m2);
 };
 
