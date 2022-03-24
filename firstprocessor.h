@@ -13,11 +13,11 @@ private:
     int map[100];
 public:
     void init(data a);
-    void GetFourPoints();
+    void GetFourPoints(Size PatSize1,int start);
     void setmap();
 private:
     std::vector<double> getline(int a0,int a1);
-    int* GetVanishingPoint(std::vector<std::vector<double> > Lines);
+    double* GetVanishingPoint(std::vector<std::vector<double> > Lines);
     std::vector<std::vector<double>> FilterLines(const std::vector<std::vector<double> > &Lines);
 
 };

@@ -26,6 +26,10 @@
 #include <tf/transform_listener.h>
 #include <visualization_msgs/Marker.h>
 
+#include <algorithm>
+#include "CornerDetAC.h"
+#include "ChessboradStruct.h"
+
 
 using namespace std;
 using namespace KDL;
@@ -51,6 +55,7 @@ public:
 private:
     bool getTransform();
     bool getFeatures();
+    void getchessboardcorners(Mat src,Size PatSize);
 };
 
 

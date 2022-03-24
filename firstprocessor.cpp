@@ -20,35 +20,95 @@ void firstprocessor::setmap()
     }
 }
 
-void firstprocessor::GetFourPoints()
+void firstprocessor::GetFourPoints(Size PatSize,int start)
 {
-    int* a[4];
+    double* a[10];
     std::vector<std::vector<double> > Lines[10];
-    int sum =4;
-    int sumj=3;
-    int sum_point=16;
+
+
+//    for(int i=0;i<PatSize.height;i++)
+//        for(int j=2;j<PatSize.width;j++)
+//            Lines[0].push_back(getline(start+PatSize.width*i,start+PatSize.width*i+j));
+//    a[0] = GetVanishingPoint(FilterLines(Lines[0]));
+//
+//    for(int i=0;i<PatSize.width;i++)
+//        for(int j=2;j<PatSize.height;j++)
+//            Lines[1].push_back(getline(start+i,start+i+PatSize.width*j));
+//    a[1] = GetVanishingPoint(FilterLines(Lines[1]));
+
+//    for(int i=0;i<PatSize.height;i++)
+//            Lines[0].push_back(getline(start+PatSize.width*i,start+PatSize.width*i+PatSize.width-1));
+//    a[0] = GetVanishingPoint(FilterLines(Lines[0]));
+//
+//    for(int i=1;i<PatSize.height;i++)
+//            Lines[1].push_back(getline(start+(PatSize.width)*(i)-1,start+(PatSize.width)*(i)));
+//    a[1] = GetVanishingPoint(FilterLines(Lines[1]));
+////    for(int i=0;i<PatSize.height-1;i++)
+////        Lines[1].push_back(getline(start+(PatSize.width)*(i),start+(PatSize.width)*(i+2)-2));
+////    a[1] = GetVanishingPoint(FilterLines(Lines[1]));
+//
+//    for(int i=0;i<PatSize.height-1;i++)
+//        Lines[2].push_back(getline(start+(PatSize.width)*(i),start+(PatSize.width)*(i+2)-1));
+//    a[2] = GetVanishingPoint(FilterLines(Lines[2]));
+
+//    for(int i=1;i<PatSize.width;i++)
+//    {
+//        for(int j=0;j<PatSize.height-1;j++)
+//        {
+//            Lines[i-1].push_back(getline(start+(PatSize.width)*(j),start+(PatSize.width)*(j+2)-i));
+//        }
+//        a[i-1] = GetVanishingPoint(FilterLines(Lines[i-1]));
+//
+//    }
+//
+//    for(int i=1;i<PatSize.width;i++)
+//    {
+//        for(int j=1;j<PatSize.height;j++)
+//        {
+//            Lines[PatSize.width+i-1].push_back(getline(start+(PatSize.width)*(j),start+(PatSize.width)*(j)-i));
+//        }
+//        a[PatSize.width+i-1] = GetVanishingPoint(FilterLines(Lines[PatSize.width+i-1]));
+//    }
+
+//int sum=6;
+//
+//    for(int i=0;i<sum;i++)
+//            Lines[0].push_back(getline(0+i*5,4+i*5));
+//    a[0] = GetVanishingPoint(FilterLines(Lines[0]));
+//
+//    for(int i=0;i<sum-1;i++)
+//            Lines[1].push_back(getline(0+i*5,4+(i+1)*5));
+//    a[1] = GetVanishingPoint(FilterLines(Lines[1]));
+//
+//    for(int i=0;i<sum-2;i++)
+//        Lines[2].push_back(getline(30+0+i,30+16+i));
+//    a[2] = GetVanishingPoint(FilterLines(Lines[2]));
+//
+//    for(int i=0;i<sum-3;i++)
+//        Lines[3].push_back(getline(30+0+i,30+16+(i+1)));
+//    a[3] = GetVanishingPoint(FilterLines(Lines[3]));
+
+
+
+    int sum=6;
 
     for(int i=0;i<sum;i++)
-        for(int j=0;j<sumj;j++)
-            Lines[0].push_back(getline(4*i,4*i+j+1));
+        Lines[0].push_back(getline(0+i,24+i));
     a[0] = GetVanishingPoint(FilterLines(Lines[0]));
 
-    for(int i=0;i<sum;i++)
-        for(int j=0;j<sumj;j++)
-            Lines[1].push_back(getline(i,i+4*(j+1)));
+    for(int i=0;i<sum-1;i++)
+        Lines[1].push_back(getline(0+i,24+(i+1)));
     a[1] = GetVanishingPoint(FilterLines(Lines[1]));
 
-
-    for(int i=0;i<sum;i++)
-        for(int j=0;j<sumj;j++)
-            Lines[2].push_back(getline(sum_point+4*i,sum_point+4*i+j+1));
+    for(int i=0;i<sum-2;i++)
+        Lines[2].push_back(getline(30+0+i*5,30+4+i*5));
     a[2] = GetVanishingPoint(FilterLines(Lines[2]));
 
-
-    for(int i=0;i<sum;i++)
-        for(int j=0;j<sumj;j++)
-            Lines[3].push_back(getline(sum_point+i,sum_point+i+4*(j+1)));
+    for(int i=0;i<sum-3;i++)
+        Lines[3].push_back(getline(30+0+i*5,30+4+(i+1)*5));
     a[3] = GetVanishingPoint(FilterLines(Lines[3]));
+
+
 
 
     for(int i=0;i<4;i++)
@@ -73,9 +133,9 @@ std::vector<double> firstprocessor::getline(int a0,int a1)
 
 
 
-int *firstprocessor::GetVanishingPoint(std::vector<std::vector<double> > Lines)
+double *firstprocessor::GetVanishingPoint(std::vector<std::vector<double> > Lines)
 {
-    int* VanishingPoint = new int[2];
+    double* VanishingPoint = new double[2];
     VanishingPoint[0] = -1; VanishingPoint[1] = -1;
 
     double MinError = 1000000000.0;
@@ -113,8 +173,8 @@ int *firstprocessor::GetVanishingPoint(std::vector<std::vector<double> > Lines)
                 if (MinError > err)
                 {
                     MinError = err;
-                    VanishingPoint[0] = (int)x0;
-                    VanishingPoint[1] = (int)y0;
+                    VanishingPoint[0] = x0;
+                    VanishingPoint[1] = y0;
                 }
             }
             else

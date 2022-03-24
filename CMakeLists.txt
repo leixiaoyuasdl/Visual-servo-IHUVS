@@ -13,11 +13,12 @@ find_package(catkin REQUIRED COMPONENTS
         sensor_msgs
         trajectory_msgs
         )
+INCLUDE_DIRECTORIES(./)
+INCLUDE_DIRECTORIES(./include)
+AUX_SOURCE_DIRECTORY(./ gSOURCE_FILES_)
 
 include_directories(${orocos_kdl_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
-ADD_EXECUTABLE(VanishingPoint main.cpp )
-target_link_libraries(VanishingPoint ${orocos_kdl_LIBRARIES} ${OpenCV_LIBS} ${catkin_LIBRARIES})
 
-ADD_EXECUTABLE(VanishingPoint_test main_test.cpp firstprocessor.cpp firstprocessor.h secondprocessor.cpp secondprocessor.h thirdprocessor.cpp thirdprocessor.h robot.cpp robot.h)
+ADD_EXECUTABLE(VanishingPoint_test main_test.cpp ${gSOURCE_FILES_})
 target_link_libraries(VanishingPoint_test ${orocos_kdl_LIBRARIES} ${OpenCV_LIBS} ${catkin_LIBRARIES})
