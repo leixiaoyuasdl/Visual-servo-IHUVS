@@ -8,14 +8,14 @@
 class firstprocessor {
 public:
     vector<cv::Point2f> mvKeys;
-    data da;
-private:
-    int map[100];
+    vector<cv::Point2f> allcorners;
+    robot da;
 public:
-    void init(data a);
-    void GetFourPoints(Size PatSize1,int start);
-    void setmap();
+    void init(robot a);
+
 private:
+    void GetFourPoints();
+    void getchessboardcorners(Mat src,Size PatSize);
     std::vector<double> getline(int a0,int a1);
     double* GetVanishingPoint(std::vector<std::vector<double> > Lines);
     std::vector<std::vector<double>> FilterLines(const std::vector<std::vector<double> > &Lines);

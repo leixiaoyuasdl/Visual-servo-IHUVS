@@ -35,27 +35,20 @@ using namespace std;
 using namespace KDL;
 using namespace cv;
 
-struct data
-{
-    vector<int> sum;
-    vector<double> x;
-    vector<double> y;
-    KDL::Vector v;
-    KDL::Rotation r;
-
-};
 class robot {
 private:
-    data da;
     std::string refFrame;
     std::string childFrame;
 public:
-    robot(std::string reF,std::string chF);
-    bool getData(data &a);
+    cv::Mat image;
+    KDL::Frame frame;
+public:
+    robot();
+    bool getData();
 private:
     bool getTransform();
-    bool getFeatures();
-    void getchessboardcorners(Mat src,Size PatSize);
+    bool getPic();
+
 };
 
 
