@@ -12,6 +12,10 @@ find_package(catkin REQUIRED COMPONENTS
         tf
         sensor_msgs
         trajectory_msgs
+        moveit_msgs
+        moveit_ros_perception
+        moveit_ros_planning_interface
+        trajectory_msgs
         )
 INCLUDE_DIRECTORIES(./findchessboard)
 AUX_SOURCE_DIRECTORY(./findchessboard gSOURCE_FILES_)

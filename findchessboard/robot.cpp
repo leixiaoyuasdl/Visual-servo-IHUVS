@@ -141,3 +141,41 @@ bool robot::getPic()
 //
 //    return true;
 }
+
+
+void robot::move_robots(moveit::planning_interface::MoveGroupInterface &arm, geometry_msgs::Pose target_pose)
+{
+    moveit_msgs::RobotTrajectory trajectory;
+    const double jump_threshold = 0.0;
+    const double eef_step = 0.01;
+    double fraction = 0.0;
+    int maxtries = 100;   //最大尝试规划次数
+    int attempts = 0;     //已经尝试规划次数
+    std::vector<geometry_msgs::Pose> waypoints;
+    waypoints.push_back(target_pose);
+
+    while(fraction < 1.0 && attempts < maxtries)
+    {
+        fraction = arm.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
+        attempts++;
+
+        if(attempts % 10 == 0)
+            ROS_INFO("Still trying after %d attempts...", attempts);
+    }
+
+    if(fraction == 1)
+    {
+        ROS_INFO("Path computed successfully. Moving the arm.");
+
+        // 生成机械臂的运动规划数据
+        moveit::planning_interface::MoveGroupInterface::Plan plan;
+        plan.trajectory_ = trajectory;
+
+        // 执行运动
+        arm.execute(plan);
+    }
+    else
+    {
+        ROS_INFO("Path planning failed with only %0.6f success after %d attempts.", fraction, maxtries);
+    }
+}

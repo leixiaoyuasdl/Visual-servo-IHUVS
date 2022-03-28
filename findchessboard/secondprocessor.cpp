@@ -49,8 +49,8 @@ void secondprocessor::ComputeH21()
 //    x.reshape(0, 3).copyTo(H);
 
 
-    cout<<"vp--"<<fp2.mvKeys<<endl;
-    H = findHomography(fp1.mvKeys, fp2.mvKeys,0);
+
+    H = findHomography(fp2.mvKeys,fp1.mvKeys ,0);
 
 
     double det = cv::determinant(H);
@@ -63,7 +63,7 @@ void secondprocessor::ComputeH21()
 void secondprocessor::getdr()
 {
     KDL::Rotation rr;
-    rr = fp1.da.frame.M.Inverse()*fp2.da.frame.M;
+    rr = fp1.frame.M.Inverse()*fp2.frame.M;
     cv::Mat a(3,3,CV_64F,rr.data);
     a.copyTo(dr);
 }

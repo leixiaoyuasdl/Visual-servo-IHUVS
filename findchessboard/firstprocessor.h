@@ -9,9 +9,10 @@ class firstprocessor {
 public:
     vector<cv::Point2f> mvKeys;
     vector<cv::Point2f> allcorners;
-    robot da;
+    cv::Mat image;
+    KDL::Frame frame;
 public:
-    void init(robot a);
+    void init(cv::Mat im,KDL::Frame f);
 
 private:
     void GetFourPoints();

@@ -4,9 +4,10 @@
 
 #include "firstprocessor.h"
 
-void firstprocessor::init(robot a)
+void firstprocessor::init(cv::Mat im,KDL::Frame f)
 {
-    da = a;
+    im.copyTo(image);
+    frame = f;
     GetFourPoints();
 }
 void firstprocessor::GetFourPoints()
@@ -24,8 +25,8 @@ void firstprocessor::GetFourPoints()
     PatSize2.width = 5;
     PatSize2.height = 4;
 
-    getchessboardcorners(da.image,PatSize1);
-    getchessboardcorners(da.image,PatSize2);
+    getchessboardcorners(image,PatSize1);
+    getchessboardcorners(image,PatSize2);
 
     std::vector<std::vector<double> > Lines[10];
 
