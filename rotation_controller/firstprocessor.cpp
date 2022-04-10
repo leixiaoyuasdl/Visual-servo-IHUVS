@@ -6,6 +6,8 @@
 
 void firstprocessor::init(cv::Mat im,KDL::Frame f)
 {
+    vector<cv::Point2f>().swap(mvKeys);
+    vector<cv::Point2f>().swap(allcorners);
     im.copyTo(image);
     frame = f;
     GetFourPoints();
@@ -15,10 +17,6 @@ void firstprocessor::GetFourPoints()
     double* a[10];
 
     Size PatSize1,PatSize2;
-//    PatSize1.width = 5;
-//    PatSize1.height = 4;
-//    PatSize2.width = 4;
-//    PatSize2.height = 3;
 
     PatSize1.width = 6;
     PatSize1.height = 5;
@@ -28,50 +26,74 @@ void firstprocessor::GetFourPoints()
     getchessboardcorners(image,PatSize1);
     getchessboardcorners(image,PatSize2);
 
-    std::vector<std::vector<double> > Lines[10];
-
-    int sum=6;
-
-    for(int i=0;i<sum;i++)
-        Lines[0].push_back(getline(0+i,24+i));
-    a[0] = GetVanishingPoint(FilterLines(Lines[0]));
-
-    for(int i=0;i<sum-1;i++)
-        Lines[1].push_back(getline(0+i,24+(i+1)));
-    a[1] = GetVanishingPoint(FilterLines(Lines[1]));
-
-    for(int i=0;i<sum-2;i++)
-        Lines[2].push_back(getline(30+0+i*5,30+4+i*5));
-    a[2] = GetVanishingPoint(FilterLines(Lines[2]));
-
-    for(int i=0;i<sum-3;i++)
-        Lines[3].push_back(getline(30+0+i*5,30+4+(i+1)*5));
-    a[3] = GetVanishingPoint(FilterLines(Lines[3]));
-
-
-//    Lines[0].push_back(getline(0,4));
-//        Lines[0].push_back(getline(15,19));
+//    std::vector<std::vector<double> > Lines[10];
+//
+//    int sum=6;
+//
+//    for(int i=0;i<sum;i++)
+//        Lines[0].push_back(getline(0+i,24+i));
 //    a[0] = GetVanishingPoint(FilterLines(Lines[0]));
 //
-//    Lines[1].push_back(getline(0,15));
-//        Lines[1].push_back(getline(4,19));
+//    for(int i=0;i<sum-1;i++)
+//        Lines[1].push_back(getline(0+i,24+(i+1)));
 //    a[1] = GetVanishingPoint(FilterLines(Lines[1]));
 //
-//    Lines[2].push_back(getline(20+0,20+8));
-//        Lines[2].push_back(getline(20+3,20+11));
+////    for(int i=0;i<sum-2;i++)
+////        Lines[4].push_back(getline(0+i,24+(i+2)));
+////    a[4] = GetVanishingPoint(FilterLines(Lines[4]));
+////
+////    for(int i=0;i<sum-1;i++)
+////        Lines[5].push_back(getline(24+i,0+(i+1)));
+////    a[5] = GetVanishingPoint(FilterLines(Lines[5]));
+////
+////    for(int i=0;i<sum-2;i++)
+////        Lines[6].push_back(getline(24+i,0+(i+2)));
+////    a[6] = GetVanishingPoint(FilterLines(Lines[6]));
+//
+//
+//    for(int i=0;i<sum-2;i++)
+//        Lines[2].push_back(getline(30+0+i*5,30+4+i*5));
 //    a[2] = GetVanishingPoint(FilterLines(Lines[2]));
 //
-//    Lines[3].push_back(getline(20+0,20+3));
-//        Lines[3].push_back(getline(20+8,20+11));
+//    for(int i=0;i<sum-3;i++)
+//        Lines[3].push_back(getline(30+0+i*5,30+4+(i+1)*5));
 //    a[3] = GetVanishingPoint(FilterLines(Lines[3]));
-
-    for(int i=0;i<4;i++)
-    {
-        cv::Point2f p;
-        p.x = a[i][0];
-        p.y = a[i][1];
-        mvKeys.push_back(p);
-    }
+//
+////    for(int i=0;i<sum-4;i++)
+////        Lines[7].push_back(getline(30+0+i*5,30+4+(i+2)*5));
+////    a[7] = GetVanishingPoint(FilterLines(Lines[7]));
+////
+////    for(int i=0;i<sum-3;i++)
+////        Lines[8].push_back(getline(30+4+(i)*5,30+0+(i+1)*5));
+////    a[8] = GetVanishingPoint(FilterLines(Lines[8]));
+////
+////    for(int i=0;i<sum-4;i++)
+////        Lines[9].push_back(getline(30+4+(i)*5,30+0+(i+2)*5));
+////    a[9] = GetVanishingPoint(FilterLines(Lines[9]));
+//
+////    Lines[0].push_back(getline(0,4));
+////        Lines[0].push_back(getline(15,19));
+////    a[0] = GetVanishingPoint(FilterLines(Lines[0]));
+////
+////    Lines[1].push_back(getline(0,15));
+////        Lines[1].push_back(getline(4,19));
+////    a[1] = GetVanishingPoint(FilterLines(Lines[1]));
+////
+////    Lines[2].push_back(getline(20+0,20+8));
+////        Lines[2].push_back(getline(20+3,20+11));
+////    a[2] = GetVanishingPoint(FilterLines(Lines[2]));
+////
+////    Lines[3].push_back(getline(20+0,20+3));
+////        Lines[3].push_back(getline(20+8,20+11));
+////    a[3] = GetVanishingPoint(FilterLines(Lines[3]));
+//
+//    for(int i=0;i<4;i++)
+//    {
+//        cv::Point2f p;
+//        p.x = a[i][0];
+//        p.y = a[i][1];
+//        mvKeys.push_back(p);
+//    }
 }
 
 std::vector<double> firstprocessor::getline(int a0,int a1)
@@ -285,7 +307,7 @@ void firstprocessor::getchessboardcorners(Mat src, Size PatSize)
 
     Mat gray;
 
-    gray =src;
+    src.copyTo(gray);
 
     //cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
     //threshold(src,gray_B,90,255,THRESH_BINARY);

@@ -143,7 +143,7 @@ bool robot::getPic()
 }
 
 
-void robot::move_robots(moveit::planning_interface::MoveGroupInterface &arm, geometry_msgs::Pose target_pose)
+void robot::move_robots(moveit::planning_interface::MoveGroupInterface *arm, geometry_msgs::Pose target_pose)
 {
     moveit_msgs::RobotTrajectory trajectory;
     const double jump_threshold = 0.0;
@@ -156,7 +156,7 @@ void robot::move_robots(moveit::planning_interface::MoveGroupInterface &arm, geo
 
     while(fraction < 1.0 && attempts < maxtries)
     {
-        fraction = arm.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
+        fraction = arm->computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
         attempts++;
 
         if(attempts % 10 == 0)
@@ -172,7 +172,7 @@ void robot::move_robots(moveit::planning_interface::MoveGroupInterface &arm, geo
         plan.trajectory_ = trajectory;
 
         // 执行运动
-        arm.execute(plan);
+        arm->execute(plan);
     }
     else
     {

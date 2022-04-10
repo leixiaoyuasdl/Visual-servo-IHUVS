@@ -45,7 +45,7 @@ public:
 public:
     robot();
     bool getData();
-    void move_robots(moveit::planning_interface::MoveGroupInterface &arm,geometry_msgs::Pose target_pose);
+    void move_robots(moveit::planning_interface::MoveGroupInterface *arm,geometry_msgs::Pose target_pose);
 private:
     bool getTransform();
     bool getPic();

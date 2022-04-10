@@ -53,13 +53,12 @@ void thirdprocessor::getJ_rotation()
     int sumofsps = sps.size();
     cv::Mat x(sumofsps*9,9,CV_64F);
     cv::Mat eye = Mat::eye(9,9,CV_64F);
-
     for(int i=0;i<sumofsps;i++)
     {
         cv::Mat a;
-//        a=eye - kronecker(sps.at(i).dr,sps.at(i).H);
-//        a.copyTo(x(Rect(0,i*9,9,9)));
-        x(Rect(0,i*9,9,9))=eye - kronecker(sps.at(i).dr,sps.at(i).H);
+        a=eye - kronecker(sps.at(i).dr,sps.at(i).H);
+        a.copyTo(x(Rect(0,i*9,9,9)));
+//        x(Rect(0,i*9,9,9))=eye - kronecker(sps.at(i).dr,sps.at(i).H);
     }
 
     cv::Mat u,w,vt;
