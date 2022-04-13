@@ -1,9 +1,7 @@
 //
 // Created by lxy on 2022/2/21.
 //
-#include "thirdprocessor.h"
-#include "position_controller.h"
-#include "controller/controller.h"
+#include "controller.h"
 int main(int argc,char **argv)
 {
     ros::init(argc, argv, "lunwen");
@@ -29,40 +27,40 @@ int main(int argc,char **argv)
 //**************************
 
 //**************************
-    firstprocessor fp_goal;
     controller con;
     con.arm.reset(new moveit::planning_interface::MoveGroupInterface("manipulator"));
 //**************************
 
 //**************************
+    Mat img_goal;
+    vector<cv::Point2f> allcorners_goal;
     std::string path= "/home/leixiaoyu/桌面/pic/goal.jpg";
-    fp_goal.init(imread(path.c_str() , -1),KDL::Frame::Identity());
-    con.fp_goal = fp_goal;
+    img_goal = imread(path.c_str() , -1);
+    allcorners_goal = con.im_p.getallcorners(img_goal);
+    img_goal.copyTo(con.img_goal);
+    con.allcorners_goal = allcorners_goal;
 
 //    if(con.rob.getData()==false) return 1;
-//    fp_goal.init(con.rob.image,con.rob.frame);
-//    con.fp_goal = fp_goal;
 //
-//    char a;
-//    cin>>a;
+//    allcorners_goal = con.im_p.getallcorners(con.rob.image);
+//    con.rob.image.copyTo(con.img_goal);
+//    con.allcorners_goal = allcorners_goal;
 
-//    myfile<<fp_goal.allcorners.at(0)<<" "<<fp_goal.allcorners.at(29)<<" "<<fp_goal.allcorners.at(30)<<" "<<fp_goal.allcorners.at(49)<<endl;
-    myfile<<fp_goal.allcorners.at(0)<<" "<<fp_goal.allcorners.at(10)<<endl<<endl;
+
+    myfile<<con.allcorners_goal.at(0)<<" "<<con.allcorners_goal.at(10)<<endl<<endl;
     con.rotation_init();
-    //con.rotation_control(1);
-    con.rotation_control(0);
+    con.rotation_control();
 
     con.position_init();
     int diedai=100;
     for(int i=0;i<diedai;i++)
     {
         con.position_control();
-        con.rotation_control(0);
-  //      myfile<<con.fp.allcorners.at(0)<<" "<<con.fp.allcorners.at(29)<<" "<<con.fp.allcorners.at(30)<<" "<<con.fp.allcorners.at(49)<<endl;
+        myfile<<con.im_p.getallcorners(con.rob.image).at(0)<<" "<<con.im_p.getallcorners(con.rob.image).at(10)<<endl;
 
-        myfile<<con.fp.allcorners.at(0)<<" "<<con.fp.allcorners.at(10)<<endl;
+        con.rotation_control();
+        myfile<<con.im_p.getallcorners(con.rob.image).at(0)<<" "<<con.im_p.getallcorners(con.rob.image).at(10)<<endl;
     }
-
 
     return 0;
 }

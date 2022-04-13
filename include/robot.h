@@ -27,8 +27,6 @@
 #include <visualization_msgs/Marker.h>
 
 #include <algorithm>
-#include "CornerDetAC.h"
-#include "ChessboradStruct.h"
 #include <moveit/move_group_interface/move_group_interface.h>
 
 using namespace std;

@@ -3,22 +3,29 @@
 //
 
 #include "controller.h"
-void controller::rotation_control(int sign)
+Mat controller::Rotation2Mat(KDL::Rotation r)
 {
-    tp.getJ_rotation();
+    cv::Mat a(3,3,CV_64F,r.data);
+    return a;
+}
+
+void controller::rotation_control()
+{
+//    tp.getJ_rotation();
+
+    cv::Mat im;
+    Frame F;
+    rob.getData();
+    rob.image.copyTo(im);
+    F = rob.frame;
 
     target_pose= arm->getCurrentPose().pose;
 
-    cv::Mat R_real,R_sim,H_sim;
-    secondprocessor test;
-    test.init(fp,fp_goal);
-    if(sign==0)
-        test.ComputeH21();
-    else
-        test.ComputeH21_chu();
-    test.getdr();
-    H_sim=test.H;
-    R_sim = tp.J_rotation.inv()*H_sim*tp.J_rotation;
+    cv::Mat R_sim,H_sim;
+
+    H_sim = im_p.ComputeH21(im,img_goal);
+
+    R_sim = rot_con.J.inv()*H_sim*rot_con.J;
 
     cv::Mat u,aw,vt;
 
@@ -31,7 +38,7 @@ void controller::rotation_control(int sign)
                     R_sim.at<double>(6),R_sim.at<double>(7),R_sim.at<double>(8));
 
     KDL::Rotation goal_r;
-    goal_r = fp.frame.M*r;
+    goal_r = rob.frame.M*r;
 
     double x,y,z,w;
     goal_r.GetQuaternion(x,y,z,w);
@@ -43,34 +50,35 @@ void controller::rotation_control(int sign)
     rob.move_robots(arm.get(),target_pose);
 
     rob.getData();
-    fp_pre.init(fp.image,fp.frame);
-    fp.init(rob.image,rob.frame);
 
-    secondprocessor sp;
-    sp.init(fp,fp_pre);
-    sp.getdr();
-    if(sign==0)
-        sp.ComputeH21();
-    else
-        sp.ComputeH21_chu();
-    tp.push_back(sp);
+    Mat dr,dH;
 
-    if(tp.sps.size() > 4 )
-    {
-        vector<secondprocessor>::iterator kk = tp.sps.begin();
-        tp.sps.erase(kk);
-    }
+    dH = im_p.ComputeH21(rob.image,im);
+
+    KDL::Rotation rr;
+    rr = rob.frame.M.Inverse()*F.M;
+
+    rot_con.add(Rotation2Mat(rr),dH);
+
+//    cout<<"H"<<endl<<sp.H<<endl;
+//    rot_con.KalmanFilter(sp.H,sp.dr);
 }
 
 void controller::position_control()
 {
+    Frame  F;
+    vector<cv::Point2f> allcorners;
+    rob.getData();
+    allcorners = im_p.getallcorners(rob.image);
+    F = rob.frame;
+
     target_pose= arm->getCurrentPose().pose;
 
     cv::Mat dy=cv::Mat(3,1,CV_64F);
-    dy.at<double>(0)=fp_goal.allcorners.at(0).x-fp.allcorners.at(0).x;
-    dy.at<double>(1)=fp_goal.allcorners.at(0).y-fp.allcorners.at(0).y;
+    dy.at<double>(0)=allcorners_goal.at(0).x-allcorners.at(0).x;
+    dy.at<double>(1)=allcorners_goal.at(0).y-allcorners.at(0).y;
     //dy.at<double>(2)=fp_goal.allcorners.at(30).x-fp.allcorners.at(30).x;
-    dy.at<double>(2)=fp_goal.allcorners.at(10).x-fp.allcorners.at(10).x;
+    dy.at<double>(2)=allcorners_goal.at(10).x-allcorners.at(10).x;
 
     cv::Mat dp=cv::Mat(3,1,CV_64F);
     dp = pos_con.J_evlt.reshape(0,3).inv()*dy;
@@ -83,24 +91,24 @@ void controller::position_control()
 
     rob.move_robots(arm.get(),target_pose);
 
+    vector<Point2f> allcorners2;
     rob.getData();
-
-    fp_pre.init(fp.image, fp.frame);
-    fp.init(rob.image, rob.frame);
+    allcorners2 = im_p.getallcorners(rob.image);
 
     vector<double> dy_v;
     vector<double> dp_v;
 
-    dy_v.push_back(fp.allcorners.at(0).x-fp_pre.allcorners.at(0).x);
-    dy_v.push_back(fp.allcorners.at(0).y-fp_pre.allcorners.at(0).y);
+    dy_v.push_back(allcorners2.at(0).x-allcorners.at(0).x);
+    dy_v.push_back(allcorners2.at(0).y-allcorners.at(0).y);
 //    dy_v.push_back(fp.allcorners.at(30).x-fp_pre.allcorners.at(30).x);
-    dy_v.push_back(fp.allcorners.at(10).x-fp_pre.allcorners.at(10).x);
+    dy_v.push_back(allcorners2.at(10).x-allcorners.at(10).x);
 
-    dp_v.push_back(fp.frame.p.x()-fp_pre.frame.p.x());
-    dp_v.push_back(fp.frame.p.y()-fp_pre.frame.p.y());
-    dp_v.push_back(fp.frame.p.z()-fp_pre.frame.p.z());
+    dp_v.push_back(rob.frame.p.x()-F.p.x());
+    dp_v.push_back(rob.frame.p.y()-F.p.y());
+    dp_v.push_back(rob.frame.p.z()-F.p.z());
 
     pos_con.KalmanFilter(dy_v,dp_v);
+
 }
 
 void controller::rotation_init()
@@ -110,26 +118,35 @@ void controller::rotation_init()
     r[1] = Rotation::RotY(0.03);
     r[2] = Rotation::RotZ(0.03);
     int sum_rot =4;
+
+    vector<cv::Mat> Hs;
+    vector<cv::Mat> drs;
+
+    Mat img;
+    Frame F;
     for(int i=0;i<sum_rot;i++)
     {
         rob.getData();
 
         if(i==0)
         {
-            fp.init(rob.image,rob.frame);
+            rob.image.copyTo(img);
+            F = rob.frame;
         }
 
         else
         {
-            fp_pre.init(fp.image,fp.frame);
-            fp.init(rob.image,rob.frame);
+            Mat dH,dr;
+            dH=im_p.ComputeH21(img,rob.image);
 
-            secondprocessor sp;
-            sp.init(fp_pre,fp);
-            sp.getdr();
-            sp.ComputeH21();
+            KDL::Rotation rr;
+            rr = F.M.Inverse()*rob.frame.M;
 
-            tp.push_back(sp);
+            Hs.push_back(dH);
+            drs.push_back(Rotation2Mat(rr));
+
+            rob.image.copyTo(img);
+            F = rob.frame;
         }
 
         if(i==sum_rot-1) break;
@@ -149,6 +166,8 @@ void controller::rotation_init()
 
         rob.move_robots(arm.get(),target_pose);
     }
+
+    rot_con.setJ0(Hs,drs);
 }
 
 void controller::position_init()
@@ -156,25 +175,32 @@ void controller::position_init()
     cv::Mat dys=cv::Mat(3,3,CV_64F);
     cv::Mat dps=cv::Mat(3,3,CV_64F);
     int sum_pos =4;
+    Frame F;
+    vector<cv::Point2f> allcorners;
     for(int i=0;i<sum_pos;i++)
     {
         rob.getData();
         if(i==0)
         {
-            fp.init(rob.image,rob.frame);
+            allcorners = im_p.getallcorners(rob.image);
+            F = rob.frame;
         }
-        else {
-            fp_pre.init(fp.image, fp.frame);
-            fp.init(rob.image, rob.frame);
+        else
+        {
+            vector<Point2f> allcorners2;
+            allcorners2 = im_p.getallcorners(rob.image);
 
-            dps.at<double>((i-1)*3)=fp.frame.p.x()-fp_pre.frame.p.x();
-            dps.at<double>((i-1)*3+1)=fp.frame.p.y()-fp_pre.frame.p.y();
-            dps.at<double>((i-1)*3+2)=fp.frame.p.z()-fp_pre.frame.p.z();
+            dps.at<double>((i-1)*3)=rob.frame.p.x()-F.p.x();
+            dps.at<double>((i-1)*3+1)=rob.frame.p.y()-F.p.y();
+            dps.at<double>((i-1)*3+2)=rob.frame.p.z()-F.p.z();
 
-            dys.at<double>((i-1)*3)=fp.allcorners.at(0).x-fp_pre.allcorners.at(0).x;
-            dys.at<double>((i-1)*3+1)=fp.allcorners.at(0).y-fp_pre.allcorners.at(0).y;
+            dys.at<double>((i-1)*3)=allcorners2.at(0).x-allcorners.at(0).x;
+            dys.at<double>((i-1)*3+1)=allcorners2.at(0).y-allcorners.at(0).y;
 //            dys.at<double>((i-1)*3+2)=fp.allcorners.at(30).x-fp_pre.allcorners.at(30).x;
-            dys.at<double>((i-1)*3+2)=fp.allcorners.at(10).x-fp_pre.allcorners.at(10).x;
+            dys.at<double>((i-1)*3+2)=allcorners2.at(10).x-allcorners.at(10).x;
+
+            allcorners = allcorners2;
+            F = rob.frame;
         }
         if(i==sum_pos-1) break;
 
@@ -192,5 +218,5 @@ void controller::position_init()
     dps = dps.t();
     dys = dys.t();
 
-    pos_con.getJ0(dys,dps);
+    pos_con.setJ0(dys,dps);
 }

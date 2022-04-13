@@ -4,26 +4,29 @@
 
 #ifndef VANISHINGPOINT_CONTROLLER_H
 #define VANISHINGPOINT_CONTROLLER_H
-#include "thirdprocessor.h"
 #include "position_controller.h"
-
-
+#include "rotation_controller.h"
+#include "robot.h"
+#include "image_processor.h"
 class controller {
 public:
-    geometry_msgs::Pose target_pose;
-    firstprocessor fp_goal;
-    robot rob;
+    double k=1;
     boost::shared_ptr<moveit::planning_interface::MoveGroupInterface> arm;
-    thirdprocessor tp;
+    Mat img_goal;
+    vector<cv::Point2f> allcorners_goal;
+    image_processor im_p;
+    robot rob;
+private:
+    geometry_msgs::Pose target_pose;
     position_controller pos_con;
-    double k=0.5;
-    firstprocessor fp;
-    firstprocessor fp_pre;
+    rotation_controller rot_con;
+
 public:
-    void rotation_control(int sign); //sign=1 chu pi pei ;sign=0 jing pi pei
+    void rotation_control(); //sign=1 chu pi pei ;sign=0 jing pi pei
     void position_control();
     void rotation_init();
     void position_init();
+    Mat Rotation2Mat(KDL::Rotation r);
 };
 
 

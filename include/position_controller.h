@@ -9,19 +9,18 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <Eigen/Dense>//包含Eigen矩阵运算库，用于矩阵计算
-#include <cmath>
-#include <limits>//用于生成随机分布数列
 using namespace std;
 using namespace cv;
 class position_controller {
-public:
+private:
     cv::Mat C,n,v;
-    cv::Mat J_pdct,p,k,J_evlt,z_meas;
+    cv::Mat J_pdct,p,k,z_meas;
 public:
-    void getJ0(cv::Mat dy,cv::Mat dp);
-    void KalmanFilter(vector<double> dy,vector<double> dp);
+    cv::Mat J_evlt;
+public:
     position_controller();
+    void setJ0(cv::Mat dy,cv::Mat dp);
+    void KalmanFilter(vector<double> dy,vector<double> dp);
 };
 
 

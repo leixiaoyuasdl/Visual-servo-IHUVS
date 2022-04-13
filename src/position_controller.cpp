@@ -3,13 +3,22 @@
 //
 
 #include "position_controller.h"
-void position_controller::getJ0(cv::Mat dys, cv::Mat dps)
+
+position_controller::position_controller()
+{
+p=cv::Mat::eye(3*3,3*3,CV_64F);
+n=cv::Mat::eye(3*3,3*3,CV_64F);
+v=0.5*cv::Mat::eye(3,3,CV_64F);
+}
+
+void position_controller::setJ0(cv::Mat dys, cv::Mat dps)
 {
     J_evlt = dys*dps.inv();
     int sum;
     sum = J_evlt.cols*J_evlt.rows;
     J_evlt  = J_evlt.reshape(0, sum);
 }
+
 
 void position_controller::KalmanFilter(vector<double> dy, vector<double> dp)
 {
@@ -48,9 +57,3 @@ void position_controller::KalmanFilter(vector<double> dy, vector<double> dp)
     p = (Mat::eye(9,9,CV_64F) - k * C) * p;
 }
 
-position_controller::position_controller()
-{
-    p=cv::Mat::eye(3*3,3*3,CV_64F);
-    n=cv::Mat::eye(3*3,3*3,CV_64F);
-    v=0.5*cv::Mat::eye(3,3,CV_64F);
-}
