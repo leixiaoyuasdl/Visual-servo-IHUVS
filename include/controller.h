@@ -26,7 +26,6 @@ public:
     void position_control();
     void rotation_init();
     void position_init();
-    Mat Rotation2Mat(KDL::Rotation r);
 };
 
 

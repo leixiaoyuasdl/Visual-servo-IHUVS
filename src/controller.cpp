@@ -3,12 +3,6 @@
 //
 
 #include "controller.h"
-Mat controller::Rotation2Mat(KDL::Rotation r)
-{
-    cv::Mat a(3,3,CV_64F,r.data);
-    return a;
-}
-
 void controller::rotation_control()
 {
 //    tp.getJ_rotation();
@@ -57,8 +51,9 @@ void controller::rotation_control()
 
     KDL::Rotation rr;
     rr = rob.frame.M.Inverse()*F.M;
-
-    rot_con.add(Rotation2Mat(rr),dH);
+    cv::Mat a(3,3,CV_64F,rr.data);
+    a.copyTo(dr);
+    rot_con.add(dr,dH);
 
 //    cout<<"H"<<endl<<sp.H<<endl;
 //    rot_con.KalmanFilter(sp.H,sp.dr);
@@ -143,7 +138,9 @@ void controller::rotation_init()
             rr = F.M.Inverse()*rob.frame.M;
 
             Hs.push_back(dH);
-            drs.push_back(Rotation2Mat(rr));
+            cv::Mat a(3,3,CV_64F,rr.data);
+            a.copyTo(dr);
+            drs.push_back(dr);
 
             rob.image.copyTo(img);
             F = rob.frame;
