@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="limited" default="false"  doc="If true, limits joint range [-PI, PI] on all joints." />
+  <arg name="paused" default="false" doc="Starts gazebo in paused mode" />
+  <arg name="gui" default="true" doc="Starts gazebo gui" />
+  
+  <!-- startup simulated world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" default="worlds/empty.world"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="gui" value="$(arg gui)"/>
+  </include>
+
+  <!-- send robot urdf to param server -->
+  <include file="$(find ur_description)/launch/ur5_upload.launch">
+    <arg name="limited" value="$(arg limited)"/>
+  </include>
+
+
+<link name="camera_link">
+        <visual>
+            <origin xyz=" 0 0 0 " rpy="0 0 0" />
+            <geometry>
+                <sphere radius="0.1" />
+            </geometry>
+            <material name="black">
+                <color rgba="0 0 0 0.95"/>
+            </material>
+        </visual>
+    </link>
+ 
+    <joint name="camera_joint" type="fixed">
+        <origin xyz="0.05 0 0.0015" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="camera_link"/>
+    </joint>
+ 
+<!--gazebo标签描述相机插件-->
+    <gazebo reference="camera_link"> <!--这一步说明插件作用的对象-->
+            <sensor type="depth" name="camera">
+            <update_rate>30.0</update_rate> <!--摄像头频率-->
+            <camera name="head">
+                <horizontal_fov>1.3962634</horizontal_fov> <!--摄像头可视范围-->
+                <image>
+                    <width>640</width> <!--分辨率-->
+                    <height>480</height>
+                    <format>R8G8B8</format> <!--数据格式-->
+                </image>
+                <clip>
+                    <near>0.02</near> <!--最近距离-->
+                    <far>300</far> <!--最远距离-->
+                </clip>
+            </camera>
+            <!--加载相机插件-->
+            <plugin name="kinect_camera_controller" filename="libgazebo_ros_openni_kinect.so">
+                <alwaysOn>true</alwaysOn>
+                <updateRate>10</updateRate>
+                <cameraName>camera</cameraName> <!--命名空间-->
+                <imageTopicName>rgb/image_raw</imageTopicName> <!--发布话题名-->
+                <!--发布的相机信息-->
+                <depthImageTopicName>depth/image_raw</depthImageTopicName>
+		<pointCloudTopicName>depth/points</pointCloudTopicName>
+                <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+		<depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+                <frameName>camera_depth_optical_frame</frameName>
+                <baseline>0.1</baseline>
+		<distortion_k1>0.0</distortion_k1>
+		<distortion_k2>0.0</distortion_k2>
+		<distortion_k3>0.0</distortion_k3>
+		<distortion_t1>0.0</distortion_t1>
+		<distortion_t2>0.0</distortion_t2>
+                <pointCloudCutoff>0.4</pointCloudCutoff>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+  <!-- push robot_description to factory and spawn robot in gazebo -->
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -z 0.1" respawn="false" output="screen" />
+
+  <include file="$(find ur_gazebo)/launch/controller_utils.launch"/>
+
+  <!-- start this controller -->
+  <rosparam file="$(find ur_gazebo)/controller/arm_controller_ur5.yaml" command="load"/>
+  <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn arm_controller" respawn="false" output="screen"/>
+
+  <!-- load other controllers -->
+  <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="load joint_group_position_controller" />
+
+</launch>

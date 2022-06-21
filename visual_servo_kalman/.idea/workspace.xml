@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="09cb9f5e-2175-4a23-84e3-4c14ffb46c38" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ProjectId" id="2ACIOOBZN5aHAzwDPNYWkwEHHD5" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="last_opened_file_path" value="$USER_HOME$/桌面/catkin_dualrobots/src/dualrobots/demo" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="09cb9f5e-2175-4a23-84e3-4c14ffb46c38" name="Default Changelist" comment="" />
+      <created>1654507127705</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1654507127705</updated>
+      <workItem from="1654507132412" duration="24000" />
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="743" y="287" width="424" height="491" key="FileChooserDialogImpl" timestamp="1654507155985">
+      <screen x="0" y="27" width="1920" height="1005" />
+    </state>
+    <state x="743" y="287" width="424" height="491" key="FileChooserDialogImpl/0.27.1920.1005@0.27.1920.1005" timestamp="1654507155985" />
+  </component>
+</project>

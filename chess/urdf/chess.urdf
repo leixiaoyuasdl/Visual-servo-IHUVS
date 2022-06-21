@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="chess">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.01738311 0 -0.01477892"
+        rpy="0 0 0" />
+      <mass
+        value="6.4102" />
+      <inertia
+        ixx="0.04504572"
+        ixy="0"
+        ixz="5.675E-05"
+        iyy="0.0495762"
+        iyz="0"
+        izz="0.08445578" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://chess/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://chess/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="black_Link">
+    <inertial>
+      <origin
+        xyz="0.15007 -0.038342 0.06"
+        rpy="0 0 0" />
+      <mass
+        value="0.324" />
+      <inertia
+        ixx="0.00207413"
+        ixy="-0.00159058"
+        ixz="0"
+        iyy="0.00396126"
+        iyz="0"
+        izz="0.00413999" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://chess/meshes/black_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://chess/meshes/black_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+         <gazebo reference="black_Link">
+  <material>Gazebo/Black</material>
+  <turnGravityOff>false</turnGravityOff>
+</gazebo>
+<gazebo reference="base_Link">
+  <material>Gazebo/White</material>
+  <turnGravityOff>false</turnGravityOff>
+</gazebo>
+  <joint
+    name="joint1"
+    type="fixed">
+    <origin
+      xyz="-0.147236802820961 0.0599999999999999 -0.0401471522118938"
+      rpy="1.5707963267949 -0.5235987755983 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="black_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>
