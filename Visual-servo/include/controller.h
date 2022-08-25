@@ -10,7 +10,7 @@
 #include "image_processor.h"
 class controller {
 public:
-    double k=0.5;
+    double k=0.3;
     boost::shared_ptr<moveit::planning_interface::MoveGroupInterface> arm;
     Mat img_goal;
     vector<cv::Point2f> allcorners_goal;

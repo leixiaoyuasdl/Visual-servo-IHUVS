@@ -35,5 +35,11 @@ target_link_libraries(${PROJECT_NAME} ${orocos_kdl_LIBRARIES} ${OpenCV_LIBS} ${c
 ADD_EXECUTABLE(${PROJECT_NAME}_setgoal src/setgoal.cpp ${source_file} )
 target_link_libraries(${PROJECT_NAME}_setgoal ${orocos_kdl_LIBRARIES} ${OpenCV_LIBS} ${catkin_LIBRARIES})
 
+ADD_EXECUTABLE(${PROJECT_NAME}_kalman src/kalman_6dof.cpp ${source_file})
+target_link_libraries(${PROJECT_NAME}_kalman ${orocos_kdl_LIBRARIES} ${OpenCV_LIBS} ${catkin_LIBRARIES})
+
 ADD_EXECUTABLE(${PROJECT_NAME}_drawg src/drawg.cpp ${source_file} )
 target_link_libraries(${PROJECT_NAME}_drawg ${orocos_kdl_LIBRARIES} ${OpenCV_LIBS} ${catkin_LIBRARIES})
+
+ADD_EXECUTABLE(${PROJECT_NAME}_creatboard src/creatboard.cpp)
+target_link_libraries(${PROJECT_NAME}_creatboard  ${OpenCV_LIBS} ${catkin_LIBRARIES})

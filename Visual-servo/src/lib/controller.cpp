@@ -3,6 +3,7 @@
 //
 
 #include "controller.h"
+
 void controller::rotation_control()
 {
 //    tp.getJ_rotation();
@@ -30,6 +31,11 @@ void controller::rotation_control()
     KDL::Rotation r(R_sim.at<double>(0),R_sim.at<double>(1),R_sim.at<double>(2),
                     R_sim.at<double>(3),R_sim.at<double>(4),R_sim.at<double>(5),
                     R_sim.at<double>(6),R_sim.at<double>(7),R_sim.at<double>(8));
+
+//    KDL::Vector ve;
+//    double theta;
+//    theta=r.GetRotAngle(ve);
+//    r=KDL::Rotation::Rot(ve,k*theta);
 
     KDL::Rotation goal_r;
     goal_r = rob.frame.M*r;

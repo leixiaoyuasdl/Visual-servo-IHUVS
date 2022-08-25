@@ -56,19 +56,21 @@ int main(int argc,char **argv)
     myfile_goal>>goal_rx>>goal_ry>>goal_rz>>goal_rw;
     geometry_msgs::Pose target_pose;
 
+    double t=0.4;
+
     target_pose.position.x = goal_x;
     target_pose.position.y = goal_y;
-    target_pose.position.z = goal_z ;
+    target_pose.position.z = goal_z;
 
-    target_pose.position.x = target_pose.position.x - 0.3;
-    target_pose.position.y = target_pose.position.y - 0.3;
-    target_pose.position.z = target_pose.position.z + 0.3;
+    target_pose.position.x = target_pose.position.x - 0.2*t;
+    target_pose.position.y = target_pose.position.y - 0.3*t;
+    target_pose.position.z = target_pose.position.z + 0.4*t;
 
     KDL::Rotation r_goal = Rotation::Quaternion(goal_rx,goal_ry,goal_rz,goal_rw);
 
     KDL::Rotation r = Rotation::Identity();
 
-    r =  Rotation::RPY(20.0/180*M_PI,-20.0/180*M_PI,60.0/180*M_PI);
+    r =  Rotation::RPY(20.0*t/180*M_PI,-20.0*t/180*M_PI,60.0*t/180*M_PI);
     //r =  Rotation::RPY(-10.0/180*M_PI,10.0/180*M_PI,30.0/180*M_PI);
 
     r_goal= r_goal*r;
@@ -162,12 +164,9 @@ int main(int argc,char **argv)
     myfile_frame<<con.rob.frame.p.x()<<" "<<con.rob.frame.p.y()<<" "<<con.rob.frame.p.z()<<endl;
     myfile_frame<<x<<" "<<y<<" "<<z<<" "<<w<<endl;
 
-    int diedai=40;
+    int diedai=20;
     for(int i=0;i<diedai;i++)
     {
-        if(i>2)
-            con.k=0.8;
-
         con.rotation_control();
         con.position_control();
 

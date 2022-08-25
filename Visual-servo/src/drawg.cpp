@@ -59,7 +59,7 @@ int main(int argc,char **argv)
     myfile_goal>>x_goal>>y_goal>>z_goal;
     myfile_goal>>rx_goal>>ry_goal>>rz_goal>>rw_goal;
 
-    int sum=40;
+    int sum=30;
     double x,y,z;
     double rx,ry,rz,rw;
 
